@@ -86,6 +86,15 @@ class Configuration(object):
                 logging.error("Missing section {} in configuration file {}. Abort execution.".format(
                     section, self.configfile))
                 sys.exit(1)
+        
+        # If kubectlpath is defined in context section use it instead of default one
+        logging.debug('Try to read context related kubectlpath config')
+        try:
+            self.contextkubectlpath = cp.get(self.context, 'kubectlpath')
+            logging.debug('Context kubectlpath found ({})'.format(self.contextkubectlpath))
+            self.kubectlpath = self.contextkubectlpath
+        except:
+            logging.debug('No extra kubectlpath in context section')
 
         if not self.kubectlpath:
             logging.warn("Trying to use default 'kubectl' from PATH")
